@@ -22,6 +22,10 @@
     </node>
     
     <!-- <播放rosbag> -->
+<<<<<<< HEAD
     <node pkg = "rosbag" type = "play" name = "player" output = "screen" args = " /home/lxp/Downloads/V2_02_medium.bag" />
+=======
+    <node pkg = "rosbag" type = "play" name = "player" output = "screen" args = " /home/lxp/EuRoc/V1_02_medium.bag" />
+>>>>>>> edf
     <!-- <node pkg = "rosbag" type = "play" name = "player" output = "screen" args = " /media/lxp/LXP2/Euroc数据集/V1_03_difficult.bag" /> -->
 </launch>
