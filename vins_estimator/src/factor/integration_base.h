@@ -60,6 +60,11 @@ public:
     propagate(dt, acc, gyr);
   }
 
+  /*** 
+   * @brief     从图像帧bk到bk+1的PVQ传播矫正和误差传递矫正。
+   * @param[in] &_linearized_ba
+   * @param[in] &_linearized_bg
+   */
   void repropagate(const Eigen::Vector3d &_linearized_ba, const Eigen::Vector3d &_linearized_bg) {
     sum_dt = 0.0;
     acc_0 = linearized_acc;
