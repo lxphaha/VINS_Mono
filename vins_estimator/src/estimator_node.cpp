@@ -44,12 +44,15 @@ double last_imu_t = 0;
  * @return    {*}
  */
 void predict(const sensor_msgs::ImuConstPtr &imu_msg) {
+  // 获取当前时间
   double t = imu_msg->header.stamp.toSec();
+  // 首imu帧判断
   if (init_imu) {
     latest_time = t;
     init_imu = 0;
     return;
   }
+  //获取dt并传递时间
   double dt = t - latest_time;
   latest_time = t;
 

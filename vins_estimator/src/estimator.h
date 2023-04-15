@@ -47,13 +47,7 @@ class Estimator
      */
     bool initialStructure();
     bool visualInitialAlign();
-    /*** 
-     * @brief     
-     * @param[in] &relative_R
-     * @param[in] &relative_T
-     * @param[in] &l
-     * @return    {*}
-     */
+
     bool relativePose(Matrix3d &relative_R, Vector3d &relative_T, int &l);
     void slideWindow();
     void solveOdometry();
