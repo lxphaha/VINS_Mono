@@ -22,7 +22,7 @@ public:
                   const Eigen::Vector3d &_gyr_0,
                   const Eigen::Vector3d &_linearized_ba,
                   const Eigen::Vector3d &_linearized_bg)
-      : acc_0{_acc_0}, // 初始时刻的加速度
+      : acc_0{_acc_0},
         gyr_0{_gyr_0},
         linearized_acc{_acc_0},
         linearized_gyr{_gyr_0},
@@ -76,7 +76,7 @@ public:
   }
 
   /***
-   * @brief
+   * @brief imu中值积分
    * @param[in] _dt 时间戳
    * @param[in] _acc_0 k时刻加速度
    * @param[in] _gyr_0 k时刻角速度
@@ -93,7 +93,6 @@ public:
    * @param[in] result_linearized_ba 加速度零偏
    * @param[in] result_linearized_bg 角速度零偏
    * @param[in] update_jacobian 是否更新jacobian 始终为1
-   * @return    {*}
    */
   void midPointIntegration(double _dt,
                            const Eigen::Vector3d &_acc_0,
@@ -213,6 +212,9 @@ public:
     gyr_0 = gyr_1;
   }
 
+  /*** 
+   * @brief 构建残差
+   */
   Eigen::Matrix<double, 15, 1> evaluate(const Eigen::Vector3d &Pi,
                                         const Eigen::Quaterniond &Qi,
                                         const Eigen::Vector3d &Vi,
