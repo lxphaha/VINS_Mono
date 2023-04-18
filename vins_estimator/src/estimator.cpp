@@ -97,7 +97,7 @@ void Estimator::processIMU(double dt, const Vector3d& linear_acceleration, const
     if (frame_count != 0) {
         pre_integrations[frame_count]->push_back(dt, linear_acceleration, angular_velocity);
         // if(solver_flag != NON_LINEAR)
-        // 这个量用于做初始化
+        // 这个量用于做初始化 push_back()函数
         tmp_pre_integration->push_back(dt, linear_acceleration, angular_velocity);
         // 保存传感器数据
         dt_buf[frame_count].push_back(dt);

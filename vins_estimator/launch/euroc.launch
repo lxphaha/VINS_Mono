@@ -20,8 +20,9 @@
         <param name="skip_dis" type="double" value="0" />
     <!-- <node pkg = "rosbag" type = "play" name = "player" output = "screen" args = "-clock /home/lxp/Downloads/V2_02_medium.bag" /> -->
     </node>
+    <node name="rvizvisualisation" pkg="rviz" type="rviz" output="log" args="-d $(find vins_estimator)/../config/vins_rviz_config.rviz" />
     
     <!-- <播放rosbag> -->
-    <node pkg = "rosbag" type = "play" name = "player" output = "screen" args = " /home/lxp/Downloads/V2_02_medium.bag" />
+    <node pkg = "rosbag" type = "play" name = "player" output = "screen" args = "/home/lxp/EuRoc/V1_02_medium.bag" />
     <!-- <node pkg = "rosbag" type = "play" name = "player" output = "screen" args = " /media/lxp/LXP2/Euroc数据集/V1_03_difficult.bag" /> -->
 </launch>

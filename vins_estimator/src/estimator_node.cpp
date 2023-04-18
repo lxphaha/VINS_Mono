@@ -52,7 +52,7 @@ void predict(const sensor_msgs::ImuConstPtr &imu_msg) {
     init_imu = 0;
     return;
   }
-  //获取dt并传递时间
+  // 获取dt并传递时间
   double dt = t - latest_time;
   latest_time = t;
 
@@ -115,10 +115,10 @@ std::vector<std::pair<std::vector<sensor_msgs::ImuConstPtr>, sensor_msgs::PointC
       return measurements;
     // imu   ***
     // image     *****
-    // imu数据来的比图像慢
+    // imu数据来的比图像慢，等待imu的数据到来
     if (!(imu_buf.back()->header.stamp.toSec() > feature_buf.front()->header.stamp.toSec() + estimator.td)) {
       // ROS_WARN("wait for imu, only should happen at the beginning");
-      sum_of_wait++;
+      sum_of_wait++; // 统计等待次数
       return measurements;
     }
     // imu       ***
@@ -131,7 +131,7 @@ std::vector<std::pair<std::vector<sensor_msgs::ImuConstPtr>, sensor_msgs::PointC
     }
     // imu    *****
     // image   * *
-    //
+    // ? 该图像帧前面所有的imu帧都装入容器中，会不会最开始imu太多
     sensor_msgs::PointCloudConstPtr img_msg = feature_buf.front();
     feature_buf.pop();
 
@@ -232,7 +232,7 @@ void process() {
     lk.unlock();        // 数据buffer的锁解锁，回调可以继续塞数据了
     m_estimator.lock(); // 进行后端求解，不能和复位重启冲突
     // 给于范围的for循环，这里就是遍历每组image imu组合
-    // ? 感觉只有一组在vector里面
+    // ? 感觉只有一组在vector里面 cout试试
     for (auto &measurement : measurements) {
       auto img_msg = measurement.second;
       double dx = 0, dy = 0, dz = 0, rx = 0, ry = 0, rz = 0;
@@ -251,7 +251,7 @@ void process() {
           rx = imu_msg->angular_velocity.x;
           ry = imu_msg->angular_velocity.y;
           rz = imu_msg->angular_velocity.z;
-          // 时间差和imu数据送进去
+          // 时间差和imu数据送进去 imu预积分
           estimator.processIMU(dt, Vector3d(dx, dy, dz), Vector3d(rx, ry, rz));
           // printf("imu: dt:%f a: %f %f %f w: %f %f %f\n",dt, dx, dy, dz, rx, ry, rz);
 
