@@ -6,21 +6,23 @@
 
 ros输出图像:内参在`rostopic echo /zed2i/zed_node/left/camera_info`中读取
 
-
+==vins_mono需要的是T_imu_cam0==
 
 不确定内参的准确程度？
 需要标定？
+
 1. zed相机的内参？找到对应的内参(在camera_info中)
 2. 标定相机的内参？找到对应的内参和imu 的内参、联合标定
 
 ### 系统值
-imu与相机：T_cam0_imu
+
+imu与相机：T_imu_cam0
 
 ```
-   0.999945   -0.0101334   0.00275299   0.00176622
-   0.0101402     0.999946  -0.00246383    0.0230196
- -0.00272787   0.00249161     0.999993 -0.000168147
-           0            0            0            1
+ 0.999945   0.0101402 -0.00272787      -0.002
+ -0.0101334    0.999946  0.00249161      -0.023
+ 0.00275299 -0.00246383    0.999993     0.00022
+          0           0           0           1
 ```
 2k:
 1104*621
@@ -69,9 +71,18 @@ rotation:
 ```
 
 
+
 ## 标定相机
 
-[ camera_calibration相机标定](https://blog.csdn.net/TengYun_zhang/article/details/123072847)
+### [camera_calibration相机标定](https://blog.csdn.net/TengYun_zhang/article/details/123072847)
+
+
+
+### kalibr标定
+
+[使用](https://blog.csdn.net/i_robots/article/details/114747281)
+
+[ZED 2i 双目-IMU标定](https://blog.csdn.net/weixin_40599145/article/details/126899201)
 
 命令行：相机标定
 
