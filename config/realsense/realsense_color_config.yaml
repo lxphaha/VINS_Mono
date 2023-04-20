@@ -22,7 +22,7 @@ projection_parameters:
    cy: 187.33084106445312
 
 # Extrinsic parameter between IMU and Camera.
-estimate_extrinsic: 2   # 0  Have an accurate extrinsic parameters. We will trust the following imu^R_cam, imu^T_cam, don't change it.
+estimate_extrinsic: 1  # 0  Have an accurate extrinsic parameters. We will trust the following imu^R_cam, imu^T_cam, don't change it.
                         # 1  Have an initial guess about extrinsic parameters. We will optimize around your initial guess.
                         # 2  Don't know anything about extrinsic parameters. You don't need to give R,T. We will try to calibrate it. Do some rotation movement at beginning.                        
 #If you choose 0 or 1, you should write down the following matrix.
@@ -31,15 +31,15 @@ extrinsicRotation: !!opencv-matrix
    rows: 3
    cols: 3
    dt: d
-   data: [ 0.99964621,  0.01105994,  0.02418954,
-           -0.01088975,  0.9999151,  -0.00715601, 
-           -0.02426663,  0.00689006,  0.99968178]
+   data: [   0.999945 ,  -0.0101334  , 0.00275299  ,
+          0.0101402  ,   0.999946 , -0.00246383   , 
+          -0.00272787 ,  0.00249161 ,    0.999993]
 #Translation from camera frame to imu frame, imu^T_cam
 extrinsicTranslation: !!opencv-matrix
    rows: 3
    cols: 1
    dt: d
-   data: [0.07494282, -0.01077138, -0.00641822]
+   data: [ 0.00176622, 0.0230196, -0.000168147]
 
 #feature traker paprameters
 max_cnt: 150            # max feature number in feature tracking
@@ -56,10 +56,10 @@ max_num_iterations: 8   # max solver itrations, to guarantee real time
 keyframe_parallax: 10.0 # keyframe selection threshold (pixel)
 
 #imu parameters       The more accurate parameters you provide, the better performance
-acc_n: 0.2          # accelerometer measurement noise standard deviation. #0.2
-gyr_n: 0.05           # gyroscope measurement noise standard deviation.     #0.05
-acc_w: 0.02         # accelerometer bias random work noise standard deviation.  #0.02
-gyr_w: 4.0e-5       # gyroscope bias random work noise standard deviation.     #4.0e-5
+acc_n: 1.4630115150562858e-02         # accelerometer measurement noise standard deviation. #0.2
+gyr_n: 1.1732970626561320e-03           # gyroscope measurement noise standard deviation.     #0.05
+acc_w: 4.5775365120985598e-04        # accelerometer bias random work noise standard deviation.  #0.02
+gyr_w: 3.1396269201840859e-06       # gyroscope bias random work noise standard deviation.     #4.0e-5
 g_norm: 9.805       # gravity magnitude
 
 #loop closure parameters

@@ -171,7 +171,8 @@ bool LinearAlignment(map<double, ImageFrame> &all_image_frame, Vector3d &g, Vect
 
         MatrixXd r_A = tmp_A.transpose() * cov_inv * tmp_A;
         VectorXd r_b = tmp_A.transpose() * cov_inv * tmp_b;
-
+ 
+       //? 叠加怎么回事？
         A.block<6, 6>(i * 3, i * 3) += r_A.topLeftCorner<6, 6>();
         b.segment<6>(i * 3) += r_b.head<6>();
 
