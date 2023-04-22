@@ -27,7 +27,7 @@ void GlobalSFM::triangulatePoint(Eigen::Matrix<double, 3, 4>& Pose0, Eigen::Matr
  * @brief     pnp求解
  * @param[in] R_initial
  * @param[in] P_initial
- * @param[in] i
+ * @param[in] i 上一个观测帧
  */
 bool GlobalSFM::solveFrameByPnP(Matrix3d& R_initial, Vector3d& P_initial, int i, vector<SFMFeature>& sfm_f) {
     vector<cv::Point2f> pts_2_vector;
@@ -35,19 +35,21 @@ bool GlobalSFM::solveFrameByPnP(Matrix3d& R_initial, Vector3d& P_initial, int i,
     for (int j = 0; j < feature_num; j++) {
         if (sfm_f[j].state != true)  // 是false就是没有被三角化，pnp是3d到2d求解，因此需要3d点
             continue;
-        Vector2d point2d;
+        Vector2d point2d; // ? 没用到
         for (int k = 0; k < (int)sfm_f[j].observation.size(); k++) {
-            if (sfm_f[j].observation[k].first == i) {
+            if (sfm_f[j].observation[k].first == i)  // 如果该特征在帧i上出现过
+            {
                 Vector2d img_pts = sfm_f[j].observation[k].second;
                 cv::Point2f pts_2(img_pts(0), img_pts(1));
-                pts_2_vector.push_back(pts_2);
+                pts_2_vector.push_back(pts_2); // 把在待求帧i上出现过的特征点归一化坐标放到容器中
                 cv::Point3f pts_3(sfm_f[j].position[0], sfm_f[j].position[1], sfm_f[j].position[2]);
-                pts_3_vector.push_back(pts_3);
-                break;
+                pts_3_vector.push_back(pts_3); // 把在待求帧i上出现过的特征在参考系l上空间坐标放到容器中
+                break; // 一个特征点在帧i上只会出现一次，一旦找到了就没必要再找了
             }
         }
     }
     if (int(pts_2_vector.size()) < 15) {
+        // !! 这个出现"unstable features tracking, please slowly move you device!\n"
         printf("unstable features tracking, please slowly move you device!\n");
         if (int(pts_2_vector.size()) < 10)
             return false;
@@ -90,21 +92,21 @@ void GlobalSFM::triangulateTwoFrames(int frame0, Eigen::Matrix<double, 3, 4>& Po
         // 遍历该特征点的观测，看看是不是能被两帧都能看见
         for (int k = 0; k < (int)sfm_f[j].observation.size(); k++) {
             if (sfm_f[j].observation[k].first == frame0) {
-                point0 = sfm_f[j].observation[k].second;  // 取出该帧的观测
+                point0 = sfm_f[j].observation[k].second;  // 取出该帧的观测 归一化坐标提取出来
                 has_0 = true;
             }
             if (sfm_f[j].observation[k].first == frame1) {
-                point1 = sfm_f[j].observation[k].second;
+                point1 = sfm_f[j].observation[k].second; //提取出归一化坐标
                 has_1 = true;
             }
         }
-        if (has_0 && has_1)  // 如果能被看见
+        if (has_0 && has_1)  // 如果两归一化坐标都存在
         {
             Vector3d point_3d;
-            // 将该特征点三角化
+            // 将该特征点三角化 根据位姿和归一化坐标，输出在参考系l下的空间坐标
             triangulatePoint(Pose0, Pose1, point0, point1, point_3d);
             sfm_f[j].state = true;  // 标志位为true
-            sfm_f[j].position[0] = point_3d(0);
+            sfm_f[j].position[0] = point_3d(0); //把参考系下的空间坐标值赋给这个特征点的对象
             sfm_f[j].position[1] = point_3d(1);
             sfm_f[j].position[2] = point_3d(2);
             // cout << "trangulated : " << frame1 << "  3d point : "  << j << "  " << point_3d.transpose() << endl;
@@ -213,17 +215,17 @@ bool GlobalSFM::construct(int frame_num, Quaterniond* q, Vector3d* T, int l, con
     // 5: triangulate all other points
     // Step 4 得到了所有关键帧的位姿，遍历没有被三角化的特征点，进行三角化
     for (int j = 0; j < feature_num; j++) {
-        if (sfm_f[j].state == true)
+        if (sfm_f[j].state == true) // 是否三角化了
             continue;
         if ((int)sfm_f[j].observation.size() >= 2)  // 只有被两帧以上的KF观测到才可以三角化
         {
             Vector2d point0, point1;
             // 取首尾两个KF,尽量保证两个KF之间足够位移
-            int frame_0 = sfm_f[j].observation[0].first;
-            point0 = sfm_f[j].observation[0].second;
-            int frame_1 = sfm_f[j].observation.back().first;
-            point1 = sfm_f[j].observation.back().second;
-            Vector3d point_3d;
+            int frame_0 = sfm_f[j].observation[0].first; // 第j个特征点在滑窗第一次被观测到的帧ID
+            point0 = sfm_f[j].observation[0].second;    // 第j个特征点在滑窗第一次被观测到的帧的归一化坐标
+            int frame_1 = sfm_f[j].observation.back().first; // 第j个特征点在滑窗最后一次被观测到的帧ID
+            point1 = sfm_f[j].observation.back().second; // 第j特征在滑窗最后一次被观测到的帧的归一化坐标
+            Vector3d point_3d; //在帧l下的空间坐标
             triangulatePoint(Pose[frame_0], Pose[frame_1], point0, point1, point_3d);
             sfm_f[j].state = true;
             sfm_f[j].position[0] = point_3d(0);

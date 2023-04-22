@@ -1,9 +1,9 @@
 %YAML:1.0
 
 #common parameters
-imu_topic: "/zed2i/zed_node/imu/data_raw"
+imu_topic: "/zed2i/zed_node/imu/data"
 image_topic: "/zed2i/zed_node/left/image_rect_color"
-output_path: "/home/tony-ws1/output/"
+output_path: "/home/lxp/output/"
 
 #camera calibration 
 model_type: PINHOLE
@@ -22,7 +22,7 @@ projection_parameters:
    cy: 187.33084106445312
 
 # Extrinsic parameter between IMU and Camera.
-estimate_extrinsic: 2   # 0  Have an accurate extrinsic parameters. We will trust the following imu^R_cam, imu^T_cam, don't change it.
+estimate_extrinsic: 1   # 0  Have an accurate extrinsic parameters. We will trust the following imu^R_cam, imu^T_cam, don't change it.
                         # 1  Have an initial guess about extrinsic parameters. We will optimize around your initial guess.
                         # 2  Don't know anything about extrinsic parameters. You don't need to give R,T. We will try to calibrate it. Do some rotation movement at beginning.                        
 #If you choose 0 or 1, you should write down the following matrix.
@@ -56,10 +56,10 @@ max_num_iterations: 8   # max solver itrations, to guarantee real time
 keyframe_parallax: 10.0 # keyframe selection threshold (pixel)
 
 #imu parameters       The more accurate parameters you provide, the better performance
-acc_n: 0.2       # accelerometer measurement noise standard deviation. #0.2
-gyr_n: 0.05           # gyroscope measurement noise standard deviation.     #0.05
-acc_w: 0.02        # accelerometer bias random work noise standard deviation.  #0.02
-gyr_w: 4.0e-5     # gyroscope bias random work noise standard deviation.     #4.0e-5
+acc_n: 9.91378e-2      # accelerometer measurement noise standard deviation. #0.2
+gyr_n: 1.1098e-2           # gyroscope measurement noise standard deviation.     #0.05
+acc_w: 2.95985e-3       # accelerometer bias random work noise standard deviation.  #0.02
+gyr_w: 4.586600e-5     # gyroscope bias random work noise standard deviation.     #4.0e-5
 g_norm: 9.805       # gravity magnitude  #9.805
 
 #loop closure parameters
