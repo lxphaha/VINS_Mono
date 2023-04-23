@@ -77,6 +77,110 @@ rotation:
 
 ### [camera_calibration相机标定](https://blog.csdn.net/TengYun_zhang/article/details/123072847)
 
+```
+rosrun camera_calibration cameracalibrator.py --approximate 0.1 --size 11x8 --square 0.01 right:=/zed2i/zed_node/right_raw/image_raw_gray left:=/zed2i/zed_node/left_raw/image_raw_gray right_camera:=/zed2i/zed_node/right_raw left_camera:=/zed2i/zed_node/left_raw --no-service-check
+
+```
+
+
+
+### KALIAR
+
+[标定板](https://blog.csdn.net/xiaojinger_123/article/details/121232948)
+
+降频率：
+
+```
+rosrun topic_tools throttle messages /zed2i/zed_node/left/image_rect_color 4.0 /zed2i/zed_node/left/image_rect_color2
+rosrun topic_tools throttle messages /zed2i/zed_node/right/image_rect_color 4.0 /zed2i/zed_node/right/image_rect_color2
+```
+
+
+
+```
+rosbag record -O Kalib_data_HD720_3.bag /zed2i/zed_node/imu/data_raw /zed2i/zed_node/left/image_rect_color2 /zed2i/zed_node/right/image_rect_color2
+```
+
+
+
+```
+rosrun kalibr kalibr_calibrate_cameras --bag Kalib_data_HD720_3.bag --topics /zed2i/zed_node/left/image_rect_color2 /zed2i/zed_node/right/image_rect_color2 --models pinhole-radtan pinhole-radtan --target april.yaml 
+```
+
+```
+rosrun kalibr kalibr_calibrate_imu_camera --bag Kalib_data_HD720_3.bag --cam Kalib_data_HD720_3-camchain.yaml --imu imu.yaml --target april.yaml --perform-synchronization
+```
+
+
+
+
+
+### 结果
+
+960 x 540 `camera_calibration`:
+
+```
+Left:
+D = [-0.046569611618025385, -0.09080741647257272, 0.004768983436670957, -0.0005447580108221106, 0.0]
+K = [1069.1830134580994, 0.0, 419.0621954607083, 0.0, 1076.747229163823, 260.2587668067614, 0.0, 0.0, 1.0]
+R = [0.960306779104331, -0.018603885714873522, 0.2783249637430562, 0.023012878517091738, 0.99965598879118, -0.012582189645915133, -0.2779951392176187, 0.01848782059184153, 0.9604045517703156]
+P = [1147.6040903490864, 0.0, 34.80210876464844, 0.0, 0.0, 1147.6040903490864, 288.00843048095703, 0.0, 0.0, 0.0, 1.0, 0.0]
+
+Right:
+D = [-0.10305751320323894, 0.0758357733781336, 0.008429125835285328, -0.008029636212553648, 0.0]
+K = [980.1283191521529, 0.0, 468.76620559518955, 0.0, 978.5849132664596, 313.4447584040264, 0.0, 0.0, 1.0]
+R = [0.9515440904224765, -0.025742845425226004, 0.30643294517965075, 0.020871877324497114, 0.9995985025096898, 0.01916242462051106, -0.30680320845619113, -0.011838061065839454, 0.9516993493699513]
+P = [1147.6040903490864, 0.0, 34.80210876464844, -153.86795478823035, 0.0, 1147.6040903490864, 288.00843048095703, 0.0, 0.0, 0.0, 1.0, 0.0]
+self.T = [-0.12758070863933282, 0.003451537868607802, -0.041085781194962694]
+self.R = [0.9995443632738519, -0.00250984302107413, -0.030079337351071104, 0.0015735333629075528, 0.9995146864256329, -0.031111342179736202, 0.030142824025392718, 0.03104983586878329, 0.9990632201479023]
+None
+# oST version 5.0 parameters
+
+
+[image]
+
+width
+960
+
+height
+540
+
+[narrow_stereo/left]
+
+camera matrix
+1069.183013 0.000000 419.062195
+0.000000 1076.747229 260.258767
+0.000000 0.000000 1.000000
+
+distortion
+-0.046570 -0.090807 0.004769 -0.000545 0.000000
+
+rectification
+0.960307 -0.018604 0.278325
+0.023013 0.999656 -0.012582
+-0.277995 0.018488 0.960405
+
+projection
+1147.604090 0.000000 34.802109 0.000000
+0.000000 1147.604090 288.008430 0.000000
+0.000000 0.000000 1.000000 0.000000
+# oST version 5.0 parameters
+
+```
+
+**系统自带**960 x 540 
+
+```
+height: 540
+width: 960
+distortion_model: "plumb_bob"
+D: [-0.059671301394701004, -0.06355620175600052, 0.0, 4.919200000585988e-05, -0.0002835890045389533]
+K: [952.2449951171875, 0.0, 478.8299865722656, 0.0, 952.635009765625, 270.0669860839844, 0.0, 0.0, 1.0]
+R: [1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]
+P: [952.2449951171875, 0.0, 478.8299865722656, 0.0, 0.0, 952.635009765625, 270.0669860839844, 0.0, 0.0, 0.0, 1.0, 0.0]
+
+```
+
 
 
 ## imu标定
