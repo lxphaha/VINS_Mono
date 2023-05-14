@@ -43,20 +43,21 @@ struct ThreadsStruct
     std::unordered_map<long, int> parameter_block_idx; //local size
 };
 
+
 class MarginalizationInfo
 {
   public:
     ~MarginalizationInfo();
     int localSize(int size) const;
     int globalSize(int size) const;
-    void addResidualBlockInfo(ResidualBlockInfo *residual_block_info);
-    void preMarginalize();
+    void addResidualBlockInfo(ResidualBlockInfo *residual_block_info); //添加残差块相关信息（优化变量，待marg变量）
+    void preMarginalize(); // 计算每个残差对应的雅克比，并更新parameter_block_data
     void marginalize();
     std::vector<double *> getParameterBlocks(std::unordered_map<long, double *> &addr_shift);
 
-    std::vector<ResidualBlockInfo *> factors;
-    int m, n;
-    std::unordered_map<long, int> parameter_block_size; //global size
+    std::vector<ResidualBlockInfo *> factors; //所有观测项
+    int m, n; //m为边缘化的变量个数，n为要保留下来的变量个数 m表示需要marg变量/parameter_block_idx的总localSize
+    std::unordered_map<long, int> parameter_block_size; //global size 
     int sum_block_size;
     std::unordered_map<long, int> parameter_block_idx; //local size
     std::unordered_map<long, double *> parameter_block_data;

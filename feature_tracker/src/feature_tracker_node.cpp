@@ -29,7 +29,6 @@ bool init_pub = 0;             // 0:第一帧不把特征发布到buf里    1:�
 /***
  * @brief     图片回调函数
  * @param[in] &img_msg rostopic
- * @return    {*}
  */
 void img_callback(const sensor_msgs::ImageConstPtr& img_msg) {
     // 对第一帧图像操作
@@ -130,7 +129,6 @@ void img_callback(const sensor_msgs::ImageConstPtr& img_msg) {
         feature_points->header = img_msg->header;
         feature_points->header.frame_id = "world";
 
-        vector<set<int>> hash_ids(NUM_OF_CAM);
         for (int i = 0; i < NUM_OF_CAM; i++) {
             auto& un_pts = trackerData[i].cur_un_pts;          // 去畸变的归一化相机坐标系
             auto& cur_pts = trackerData[i].cur_pts;            // 像素坐标
@@ -140,7 +138,6 @@ void img_callback(const sensor_msgs::ImageConstPtr& img_msg) {
                 // 只发布大于1的，因为等于1没法构成重投影约束，也没法三角化
                 if (trackerData[i].track_cnt[j] > 1) {
                     int p_id = ids[j];
-                    hash_ids[i].insert(p_id);  // 这个没有用到
                     geometry_msgs::Point32 p;
                     p.x = un_pts[j].x;
                     p.y = un_pts[j].y;
@@ -169,7 +166,7 @@ void img_callback(const sensor_msgs::ImageConstPtr& img_msg) {
 
         // rviz特征点图像可视化相关操作
         if (SHOW_TRACK) {
-            // // 显示灰色
+            //  显示灰色
             ptr = cv_bridge::cvtColor(ptr, sensor_msgs::image_encodings::BGR8);
             cv::Mat stereo_img(ROW * NUM_OF_CAM, COL, CV_8UC3);
             stereo_img = ptr->image;
@@ -206,7 +203,7 @@ void img_callback(const sensor_msgs::ImageConstPtr& img_msg) {
             }
             // cv::imshow("vis", stereo_img);
             // cv::waitKey(5);
-            // // 发布图片rostopic
+            // 发布图片rostopic
             pub_match.publish(ptr->toImageMsg());
         }
     }
